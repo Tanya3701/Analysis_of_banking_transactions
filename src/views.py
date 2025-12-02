@@ -1,8 +1,18 @@
 import json
 from typing import Any
 
-from utils import (currency_rate, date_transactions, filter_cards, greeting, list_cards, list_formatted, read_excel,
-                   read_json, stock_rate, top_transactions)
+from utils import (
+    currency_rate,
+    date_transactions,
+    filter_cards,
+    greeting,
+    list_cards,
+    list_formatted,
+    read_excel,
+    read_json,
+    stock_rate,
+    top_transactions,
+)
 
 
 def main_page(date: str) -> Any:

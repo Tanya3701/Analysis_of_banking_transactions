@@ -1,8 +1,7 @@
 import datetime
 import json
 import os
-from math import nan
-from typing import Any
+from typing import Any, Union
 
 import pandas as pd
 import requests
@@ -36,14 +35,15 @@ def greeting() -> str:
         greet = "Добрый вечер"
     return greet
 
-def read_excel(excel_file: Any = "../data/operations.xlsx") -> list[dict]:
+
+def read_excel(excel_file: Union = "../data/operations.xlsx") -> list[dict]:
     """Преобразует файл xlsx в список словарей"""
     excel_file = pd.read_excel(excel_file)
     excel_file_list = excel_file.to_dict("records")
     return excel_file_list
 
 
-def filter_cards(excel_file_list: list[dict], nan=None) -> list[dict]:
+def filter_cards(excel_file_list: list[dict]) -> list[list[dict[Any, Any]]]:
     """Фильтр списков по номерам карт"""
     list_cards = []
     list_transactions = []
@@ -105,7 +105,7 @@ def list_formatted(top_spent: list[dict]) -> list[dict]:
     return formatted_cards
 
 
-def read_json(json_file: Any = "../user_settings.json") -> list[dict[Any, Any]]:
+def read_json(json_file: Union = "../user_settings.json") -> list[list[dict]]:
     """Преобразует Json файл в список"""
     with open(json_file, "r", encoding="utf-8") as file:
         currency = json.load(file)
@@ -139,7 +139,7 @@ API_KEY_STOCK = os.getenv("API_KEY_STOCK")
 headers = {"X-Api-Key": API_KEY_STOCK}
 
 
-def stock_rate(user_settings: list[dict]) -> list[dict]:
+def stock_rate(user_settings: list[dict[Union, Union]]) -> list[dict]:
     """Выводит актуальную стоимость акций"""
     list_rate = []
     for data in user_settings:
@@ -154,77 +154,3 @@ def stock_rate(user_settings: list[dict]) -> list[dict]:
                 new_dict["price"] = data["price"]
                 list_rate.append(new_dict)
     return list_rate
-
-
-if __name__ == "__main__":
-    print(filter_cards([{
-            "Дата операции": "02.03.2019 14:02:30",
-            "Дата платежа": "04.03.2019",
-            "Номер карты": "*7198",
-            "Статус": "OK",
-            "Сумма операции": -167.0,
-            "Валюта операции": "RUB",
-            "Сумма платежа": -167.0,
-            "Валюта платежа": "RUB",
-            "Кэшбэк": nan,
-            "Категория": "Фастфуд",
-            "MCC": 5814.0,
-            "Описание": "Крошка Картошка",
-            "Бонусы (включая кэшбэк)": 3,
-            "Округление на инвесткопилку": 0,
-            "Сумма операции с округлением": 167.0,
-        },
-        {
-            "Дата операции": "02.03.2019 13:54:22",
-            "Дата платежа": "04.03.2019",
-            "Номер карты": "*7198",
-            "Статус": "OK",
-            "Сумма операции": -78.0,
-            "Валюта операции": "RUB",
-            "Сумма платежа": -78.0,
-            "Валюта платежа": "RUB",
-            "Кэшбэк": nan,
-            "Категория": "Супермаркеты",
-            "MCC": 5499.0,
-            "Описание": "Колхоз",
-            "Бонусы (включая кэшбэк)": 1,
-            "Округление на инвесткопилку": 0,
-            "Сумма операции с округлением": 78.0,
-        },
-        {
-            "Дата операции": "02.03.2019 12:49:51",
-            "Дата платежа": "04.03.2019",
-            "Номер карты": "*7197",
-            "Статус": "OK",
-            "Сумма операции": -350.0,
-            "Валюта операции": "RUB",
-            "Сумма платежа": -350.0,
-            "Валюта платежа": "RUB",
-            "Кэшбэк": nan,
-            "Категория": "Фастфуд",
-            "MCC": 5814.0,
-            "Описание": "SUPERMANGO",
-            "Бонусы (включая кэшбэк)": 7,
-            "Округление на инвесткопилку": 0,
-            "Сумма операции с округлением": 350.0,
-        },
-        {
-            "Дата операции": "01.03.2019 15:37:24",
-            "Дата платежа": "04.03.2019",
-            "Номер карты": "*7197",
-            "Статус": "OK",
-            "Сумма операции": -240.0,
-            "Валюта операции": "RUB",
-            "Сумма платежа": -240.0,
-            "Валюта платежа": "RUB",
-            "Кэшбэк": nan,
-            "Категория": "Фастфуд",
-            "MCC": 5814.0,
-            "Описание": "Bufet 2",
-            "Бонусы (включая кэшбэк)": 4,
-            "Округление на инвесткопилку": 0,
-            "Сумма операции с округлением": 240.0,
-        },
-    ]))
-
-
