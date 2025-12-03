@@ -2,11 +2,13 @@ from typing import Any
 from unittest.mock import mock_open, patch
 
 import pandas as pd
+import time_machine
 
 from src.utils import (
     currency_rate,
     date_transactions,
     filter_cards,
+    greeting,
     list_cards,
     list_formatted,
     read_excel,
@@ -81,3 +83,8 @@ def test_stock_rate(mock_get: Any) -> None:
     assert (
         stock_rate([{"user_stocks": ["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]}]) == []
     )
+
+
+def test_greeting() -> None:
+    with time_machine.travel("2025-04-01 01:00:00"):
+        assert greeting() == "Доброй ночи"

@@ -154,3 +154,7 @@ def stock_rate(user_settings: list[dict[Union, Union]]) -> list[dict]:
                 new_dict["price"] = data["price"]
                 list_rate.append(new_dict)
     return list_rate
+
+
+if __name__ == "__main__":
+    print(greeting())

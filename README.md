@@ -131,3 +131,15 @@ pip install -r requirements.txt
     }
   ]
 }`
+
+* ___coverage: platform win32, python 3.13.7-final-0 ___
+* Name_______Cover
+-----------------------------------------
+* src\__init__.py_____100%
+* src\utils.py ______91%
+* tests\__init__.py____100%
+* tests\conftest.py__100%
+* tests\test_utils.py_100%
+-----------------------------------------
+TOTAL____191_______94%
+`
