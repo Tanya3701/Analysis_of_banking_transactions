@@ -14,7 +14,6 @@ pip install -r requirements.txt
 ## Содержание:
 ### Главная страница
 #### Функционал:
-
 * date_transactions():
 
     """Формирует список транзакций на заявленный месяц"""
@@ -132,14 +131,43 @@ pip install -r requirements.txt
   ]
 }`
 
+## Сервисы
+
+### Функционал
+* prof_cashback(data: pd.DataFrame, year: str, month: str) -> Any:\
+"""Выводит сумму кэшбэка для каждой категории на выбранный период"""
+
+* investment_bank(month: str, transactions: pd.DataFrame, limit: int) -> float:
+
+    """Выводит конечную сумму "инвесткопилки" за выбранный период"""
+
+## Отчеты
+### Функционал
+* spending_by_category(
+    transactions: pd.DataFrame, category: str, date: Optional[str] = None
+) -> pd.DataFrame:
+
+    """Выводит общую сумму трат по выбранной категории за последние 3 месяца""" 
+* spending_by_weekday(
+    transactions: pd.DataFrame, date: Optional[str] = None
+) -> list[Any]:
+
+    """ "Выводит среднюю сумму затрат для каждого дня недели, за последние три месяца"""
+
+
+_________________________________________________________
+
 * ___coverage: platform win32, python 3.13.7-final-0 ___
 * Name_______Cover
 -----------------------------------------
-* src\__init__.py_____100%
-* src\utils.py ______91%
-* tests\__init__.py____100%
-* tests\conftest.py__100%
-* tests\test_utils.py_100%
+* src\__init__.py____________100%
+* src\services.py__________97%
+* src\utils.py_____________90%
+* tests\__init_____________100%
+* tests\conftest.py_________95%
+* tests\test_services.py____100%
+* tests\test_utils.py________100% 
+
 -----------------------------------------
 TOTAL____191_______94%
 `

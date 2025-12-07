@@ -1,11 +1,27 @@
 import datetime
 import json
+import logging
 import os
 from typing import Any, Union
 
 import pandas as pd
 import requests
 from dotenv import load_dotenv
+
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+data_dir = os.path.join(base_dir, "data")
+log_dir = os.path.join(base_dir, "logs")
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, "utils.log")
+data_file = os.path.join(data_dir, "operations.xlsx")
+
+
+logger = logging.getLogger("utils.py")
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(filename=log_file, encoding="utf-8", mode="w")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def date_transactions(excel_file_list: Any, date_actual: str) -> list[dict]:
@@ -19,6 +35,7 @@ def date_transactions(excel_file_list: Any, date_actual: str) -> list[dict]:
         )
         if transaction_date >= start_date and transaction_date <= date_actual_d:
             new_list.append(transaction)
+    logger.info("Успешное завершение функции")
     return new_list
 
 
@@ -27,19 +44,25 @@ def greeting() -> str:
     date_now = datetime.datetime.now()
     if date_now.hour >= 0 and date_now.hour <= 5:
         greet = "Доброй ночи"
+        logger.info(greet)
     elif date_now.hour >= 6 and date_now.hour <= 11:
         greet = "Доброе утро"
+        logger.info(greet)
     elif date_now.hour >= 12 and date_now.hour <= 18:
         greet = "Добрый день"
+        logger.info(greet)
     elif date_now.hour >= 19 and date_now.hour <= 23:
         greet = "Добрый вечер"
+        logger.info(greet)
+    logger.info("Успешное завершение функции")
     return greet
 
 
-def read_excel(excel_file: Union = "../data/operations.xlsx") -> list[dict]:
+def read_excel(excel_file: pd.DataFrame = data_file) -> list[dict]:
     """Преобразует файл xlsx в список словарей"""
     excel_file = pd.read_excel(excel_file)
     excel_file_list = excel_file.to_dict("records")
+    logger.info("Успешное завершение функции")
     return excel_file_list
 
 
@@ -56,6 +79,7 @@ def filter_cards(excel_file_list: list[dict]) -> list[list[dict[Any, Any]]]:
             if card == transactions.get("Номер карты"):
                 new_list.append(transactions)
         list_transactions.append(new_list)
+    logger.info("Успешное завершение функции")
     return list_transactions
 
 
@@ -76,6 +100,7 @@ def list_cards(list_transactions: list[dict], nan: Any = None) -> list[dict]:
                 dict_card["cashback"] = cashback
         if len(dict_card) != 0:
             new_list.append(dict_card)
+    logger.info("Успешное завершение функции")
     return new_list
 
 
@@ -85,6 +110,7 @@ def top_transactions(excel_file_list: list[dict]) -> list[dict]:
         excel_file_list, key=lambda transaction: transaction["Сумма платежа"]
     )
     top_spent = sorted_spent[:5]
+    logger.info("Успешное завершение функции")
     return top_spent
 
 
@@ -102,6 +128,7 @@ def list_formatted(top_spent: list[dict]) -> list[dict]:
         description = transactions.pop("Описание")
         new_transaction["description"] = description
         formatted_cards.append(new_transaction)
+        logger.info("Успешное завершение функции")
     return formatted_cards
 
 
@@ -109,6 +136,7 @@ def read_json(json_file: Union = "../user_settings.json") -> list[list[dict]]:
     """Преобразует Json файл в список"""
     with open(json_file, "r", encoding="utf-8") as file:
         currency = json.load(file)
+    logger.info("Успешное завершение функции")
     return currency
 
 
@@ -131,6 +159,7 @@ def currency_rate(user_settings: list[dict]) -> list[dict]:
             new_dict["currency"] = currency
             new_dict["rate"] = result
             list_rate.append(new_dict)
+    logger.info("Успешное завершение функции")
     return list_rate
 
 
@@ -153,8 +182,9 @@ def stock_rate(user_settings: list[dict[Union, Union]]) -> list[dict]:
                 new_dict["stock"] = stock
                 new_dict["price"] = data["price"]
                 list_rate.append(new_dict)
+    logger.info("Успешное завершение функции")
     return list_rate
 
 
 if __name__ == "__main__":
-    print(greeting())
+    print(read_excel())

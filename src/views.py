@@ -30,3 +30,7 @@ def main_page(date: str) -> Any:
     new_dict["currency_rates"] = currency_rates
     new_dict["stock_prices"] = stock_prices
     return json.dumps(new_dict, indent=4, ensure_ascii=False)
+
+
+if __name__ == "__main__":
+    print(main_page("2019-04-15 13:00:00"))
