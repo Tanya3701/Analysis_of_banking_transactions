@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 import os
 from typing import Any, Optional
@@ -10,7 +11,7 @@ log_dir = os.path.join(base_dir, "logs")
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "reports.log")
 log_file_json = os.path.join(log_dir, "spending_by_category.json")
-log_file_csv = os.path.join(log_dir, "spending_by_weekday.csv")
+log_file_week = os.path.join(log_dir, "spending_by_weekday.json")
 logger = logging.getLogger("reports.py")
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(filename=log_file, encoding="utf-8", mode="w")
@@ -27,16 +28,19 @@ def my_log(filename=None):
             try:
                 result = function(*args, **kwargs)
                 if filename:
-                    file = open(filename, "w", encoding="utf-8")
-                    file.write(f"{result}")
-                    file.close()
+                    with open(filename, "w", encoding="utf-8") as f:
+                        json.dump(result, f, indent=4, ensure_ascii=False)
                 else:
                     print(f"{result}")
             except Exception as e:
                 if filename:
-                    file = open(filename, "a", encoding="utf-8")
-                    file.write(f"{function_name} error: {e} " + "\n")
-                    file.close()
+                    with open(filename, "w", encoding="utf-8") as f:
+                        json.dump(
+                            f"{function_name} error: {e} " + "\n",
+                            f,
+                            ensure_ascii=False,
+                            indent=4,
+                        )
                 else:
                     print(f"{function.__name__} error: {e}")
 
@@ -50,7 +54,6 @@ def spending_by_category(
     transactions: pd.DataFrame, category: str, date: Optional[str] = None
 ) -> pd.DataFrame:
     """Выводит общую сумму трат по выбранной категории за последние 3 месяца"""
-    global transaction_date
     if date:
         transactions_end = datetime.datetime.strptime(date, "%Y-%m-%d")
         transactions_start = transactions_end - datetime.timedelta(days=92)
@@ -75,15 +78,16 @@ def spending_by_category(
             for items in transaction_list:
                 if str(items.get("Категория")).lower() == category.lower():
                     category_list.append(abs(items.get("Сумма платежа")))
-            result = [{category.title(): sum(category_list)}]
-        else:
-            logger.info("Нет данных, удовлетворяющих запросу")
-            result = []
+                    if len(category_list) > 0:
+                        result = [{category.title(): sum(category_list)}]
+                    else:
+                        logger.info("Нет данных, удовлетворяющих запросу")
+                        result = []
     logger.info("Успешное завершение функции")
     return result
 
 
-@my_log(log_file_csv)
+@my_log(log_file_week)
 def spending_by_weekday(
     transactions: pd.DataFrame, date: Optional[str] = None
 ) -> list[Any]:

@@ -57,6 +57,8 @@ def prof_cashback(data: pd.DataFrame, year: str, month: str) -> Any:
                             json_str = json.dumps(
                                 sorted_dict, indent=4, ensure_ascii=False
                             )
+            else:
+                json_str = {}
     logger.info("Успешное завершение функции")
     return json_str
 
@@ -103,4 +105,5 @@ def investment_bank(month: str, transactions: pd.DataFrame, limit: int) -> float
                 n = limit - int(str_last_digit)
                 sum_pay.append(n)
     logger.info("Успешное завершение функции")
-    return sum(sum_pay)
+    json_str = json.dumps(sum(sum_pay))
+    return json_str

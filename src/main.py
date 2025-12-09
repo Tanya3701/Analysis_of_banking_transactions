@@ -1,31 +1,31 @@
-from src.views import main_page
+from src.reports import spending_by_category, spending_by_weekday
+from src.services import form_list_transactions, investment_bank, prof_cashback
 from src.utils import read_excel
-from src.services import prof_cashback, investment_bank, form_list_transactions
-from src.reports import spending_by_weekday, spending_by_category
+from src.views import main_page
 
 date = input()
 main_page(date)
 # Главная функция. Выводит json-ответ
 
-data = read_excel()
+data_excel = read_excel()
 year = input()
 month = input()
-prof_cashback(data, year, month)
+prof_cashback(data_excel, year, month)
 # Выводит сумму кэшбэка для каждой категории на выбранный период
 
 month = input()
-transactions = form_list_transactions(read_excel())
+transaction_list = form_list_transactions(read_excel())
 limit = int(input())
-investment_bank(month, transactions, limit)
+investment_bank(month, transaction_list, limit)
 # Выводит конечную сумму "инвесткопилки" за выбранный период
 
-transactions = read_excel()
+transactions_category = read_excel()
 category = input()
 date = input()
-spending_by_category(transactions, category, date)
+spending_by_category(transactions_category, category, date)
 # Выводит общую сумму трат по выбранной категории за последние 3 месяца
 
-transactions = read_excel()
+transactions_week = read_excel()
 date = input()
-spending_by_weekday(transactions, date)
+spending_by_weekday(transactions_week, date)
 # Выводит среднюю сумму затрат для каждого дня недели, за последние три месяца
